@@ -13,9 +13,13 @@ https://docs.zephyrproject.org/latest/guides/porting/board_porting.html
 
 picocom -b 115200 /dev/ttyACM0
 
+
 source ../zephyrproject/zephyr/zephyr-env.sh
-west build -b nucleo_f103rb .
+
+west build -b my_board -- -DBOARD_ROOT=.
 west flash
 west debug
+
 west build -t clean
+west build -t pristine
 
