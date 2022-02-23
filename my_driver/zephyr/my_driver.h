@@ -47,6 +47,7 @@ static inline int z_vrfy_my_driver_do_this(const struct device *dev, int foo, in
 
 	return z_impl_my_driver_do_this(dev, foo, bar);
 }
+#include <syscalls/my_driver_do_this_mrsh.c>
 
 
 static inline void z_vrfy_my_driver_do_that(const struct device *dev, void *baz)
@@ -55,6 +56,7 @@ static inline void z_vrfy_my_driver_do_that(const struct device *dev, void *baz)
 
 	z_impl_my_driver_do_that(dev, baz);
 }
+#include <syscalls/my_driver_do_that_mrsh.c>
 #endif /* CONFIG_USERSPACE */
 
 
