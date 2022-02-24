@@ -9,7 +9,11 @@ https://docs.zephyrproject.org/latest/reference/drivers/index.html
 https://docs.zephyrproject.org/latest/guides/modules.html
 https://docs.zephyrproject.org/latest/reference/usermode/syscalls.html
 
+https://docs.zephyrproject.org/latest/guides/dts/intro.html
+
+
 https://github.com/zephyrproject-rtos/example-application
+
 
 /home/julien/zephyrproject/zephyr/samples/application_development
 -> out-of-tree board
