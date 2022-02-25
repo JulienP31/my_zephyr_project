@@ -1,0 +1,2 @@
+add_subdirectory_ifdef(CONFIG_MY_SENSOR my_sensor)
+

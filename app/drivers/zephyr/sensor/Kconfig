@@ -1,0 +1,8 @@
+if SENSOR
+
+menu "Sensor Drivers"
+rsource "my_sensor/Kconfig"
+endmenu
+
+endif # SENSOR
+

@@ -16,7 +16,7 @@ K_FIFO_DEFINE(my_fifo);
 /* -------------------- my_tread -------------------- */
 void my_tread(void)
 {
-	const struct device *lps25hb = device_get_binding(DT_LABEL(DT_INST(0, st_lps25hb_press)));
+	const struct device *lps25hb = device_get_binding(DT_LABEL(DT_INST(0, st_my_sensor_press)));;
 	my_data_t my_data = {0};
 	
 	printk("Starting my_thread\n");

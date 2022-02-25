@@ -26,7 +26,7 @@ picocom -b 115200 /dev/ttyACM0
 
 source ../zephyrproject/zephyr/zephyr-env.sh
 
-west build -b my_board -- -DBOARD_ROOT=.
+west build -s app -b my_board -- -DBOARD_ROOT=..
 west flash
 west debug
 

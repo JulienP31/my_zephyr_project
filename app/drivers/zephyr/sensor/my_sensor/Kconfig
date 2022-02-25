@@ -1,0 +1,14 @@
+config MY_SENSOR
+	bool "My sensor"
+	depends on (GPIO && I2C)
+	help
+	  Enable driver for my sensor.
+
+config MY_SENSOR_SAMPLING_RATE
+	int "Output data rate"
+	default 1
+	depends on MY_SENSOR
+	help
+	  Sensor output data rate expressed in samples per second.
+	  Data rates supported by the chip are 1, 7, 13, 25.
+
