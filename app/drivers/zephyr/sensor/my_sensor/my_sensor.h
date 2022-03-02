@@ -47,7 +47,7 @@ struct my_sensor_config {
 struct my_sensor_data {
 	const struct device *i2c_master;
 	
-	const struct device *dev; /* [NOTA] */
+	const struct device *dev; /* [NOTA] Link to device instance */
 	
 	const struct device *gpio_port;
 	struct gpio_callback gpio_cb;
