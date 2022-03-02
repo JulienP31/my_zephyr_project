@@ -88,9 +88,10 @@
 	clock-frequency = <I2C_BITRATE_FAST>;
 	
 	my_sensor@5d {
-		 compatible = "st,my_sensor_press";
-		 label = "MY_SENSOR";
-		 reg = <0x5d>;
+		compatible = "st,my_sensor_press";
+		label = "MY_SENSOR";
+		reg = <0x5d>;
+		irq-gpios = <&gpiob 4 GPIO_ACTIVE_HIGH>;
 	};
 };
 

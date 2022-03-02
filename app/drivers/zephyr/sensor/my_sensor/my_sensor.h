@@ -2,6 +2,7 @@
 #define _MY_SENSOR_H_
 
 
+#include <drivers/gpio.h>
 #include <drivers/i2c.h>
 
 
@@ -41,8 +42,22 @@ struct my_sensor_config {
 };
 
 
+#define MY_SENSOR_THREAD_STACK_SIZE 1024
+
 struct my_sensor_data {
 	const struct device *i2c_master;
+	
+	const struct device *dev; /* [NOTA] */
+	
+	const struct device *gpio_port;
+	struct gpio_callback gpio_cb;
+	struct sensor_trigger data_ready_trigger;
+	sensor_trigger_handler_t data_ready_handler;
+	
+	K_KERNEL_STACK_MEMBER(irq_thread_stack, MY_SENSOR_THREAD_STACK_SIZE);
+	struct k_thread irq_thread;
+	struct k_sem irq_sem;
+	
 	int32_t sample_press;
 };
 
