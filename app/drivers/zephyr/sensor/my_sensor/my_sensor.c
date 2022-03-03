@@ -5,21 +5,20 @@
 #include "my_sensor.h"
 
 
-#define DT_DRV_COMPAT st_my_sensor_press
+#define DT_DRV_COMPAT  st_my_sensor_press
+#define MY_SENSOR_DRDY DT_NODELABEL(my_sensor_drdy)
 
 
 LOG_MODULE_REGISTER(MY_SENSOR, CONFIG_SENSOR_LOG_LEVEL);
 
 
 /* -------------------- my_sensor_gpio_callback -------------------- */
-static void my_sensor_gpio_callback(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
+static void my_sensor_gpio_callback(const struct device *port, struct gpio_callback *cb, uint32_t pins)
 {
-	/* [NOTA] dev function parameter does NOT refer to driver instance, it refers to gpio_port device ! */
 	struct my_sensor_data *drv_data = CONTAINER_OF(cb, struct my_sensor_data, gpio_cb);
 	
 	// Temporarily disable IRQ
-	//	gpio_pin_interrupt_configure(drv_data->gpio_port, DT_INST_GPIO_PIN(0, irq_gpios), GPIO_INT_DISABLE);
-		gpio_pin_interrupt_configure(drv_data->gpio_port, 4, GPIO_INT_DISABLE);
+	gpio_pin_interrupt_configure_dt(&drv_data->gpio_spec, GPIO_INT_DISABLE);
 	
 	// Give semaphore to thread
 	k_sem_give(&drv_data->irq_sem);
@@ -39,8 +38,7 @@ static void my_sensor_thread(struct my_sensor_data *drv_data)
 		}
 		
 		// Re-enable IRQ
-		//	gpio_pin_interrupt_configure(drv_data->gpio_port, DT_INST_GPIO_PIN(0, irq_gpios), GPIO_INT_EDGE_TO_ACTIVE);
-			gpio_pin_interrupt_configure(drv_data->gpio_port, 4, GPIO_INT_EDGE_TO_ACTIVE);
+		gpio_pin_interrupt_configure_dt(&drv_data->gpio_spec, GPIO_INT_EDGE_TO_ACTIVE);
 	}
 }
 
@@ -63,21 +61,17 @@ static int my_sensor_trigger_set(const struct device *dev, const struct sensor_t
 		return -EIO;
 	}
 	
-	// Get IRQ GPIO
-	//	drv_data->gpio_port = device_get_binding(DT_INST_GPIO_LABEL(0, irq_gpios));
-		drv_data->gpio_port = device_get_binding("GPIOB");
-	if ( !device_is_ready(drv_data->gpio_port) ) {
-		//	LOG_DBG("Could not get %s", DT_INST_GPIO_LABEL(0, irq_gpios));
-			LOG_DBG("Could not get %s", "GPIOB");
+	// Configure IRQ GPIO
+	if ( !device_is_ready(drv_data->gpio_spec.port) ) {
+		LOG_DBG("IRQ GPIO %s not ready", drv_data->gpio_spec.port->name);
 		return -EINVAL;
 	}
 	
-	//	gpio_pin_configure(drv_data->gpio_port, DT_INST_GPIO_PIN(0, irq_gpios), GPIO_INPUT | DT_INST_GPIO_FLAGS(0, irq_gpios));
-		gpio_pin_configure(drv_data->gpio_port, 4, GPIO_INPUT | GPIO_ACTIVE_HIGH);
+	//gpio_pin_configure_dt(&drv_data->gpio_spec, GPIO_INPUT | DT_INST_GPIO_FLAGS(0, irq_gpios));
+	gpio_pin_configure_dt(&drv_data->gpio_spec, GPIO_INPUT | DT_GPIO_FLAGS(MY_SENSOR_DRDY, gpios));
 	
 	// Disable IRQ
-	//	gpio_pin_interrupt_configure(drv_data->gpio_port, DT_INST_GPIO_PIN(0, irq_gpios), GPIO_INT_DISABLE);
-		gpio_pin_interrupt_configure(drv_data->gpio_port, 4, GPIO_INT_DISABLE);
+	gpio_pin_interrupt_configure_dt(&drv_data->gpio_spec, GPIO_INT_DISABLE);
 	
 	// Power OFF chip
 	if (i2c_reg_write_byte(drv_data->i2c_master, drv_config->i2c_slave_addr, MY_SENSOR_REG_CTRL_REG1, 0x00) < 0) {
@@ -93,16 +87,13 @@ static int my_sensor_trigger_set(const struct device *dev, const struct sensor_t
 	
 	// Configure IRQ
 	drv_data->data_ready_handler = handler;
-	
 	drv_data->data_ready_trigger = *trig;
 	
-	//	gpio_pin_interrupt_configure(drv_data->gpio_port, DT_INST_GPIO_PIN(0, irq_gpios), GPIO_INT_EDGE_TO_ACTIVE);
-		gpio_pin_interrupt_configure(drv_data->gpio_port, 4, GPIO_INT_EDGE_TO_ACTIVE);
+	gpio_pin_interrupt_configure_dt(&drv_data->gpio_spec, GPIO_INT_EDGE_TO_ACTIVE);
 	
-	//	gpio_init_callback(&drv_data->gpio_cb, my_sensor_gpio_callback, BIT(DT_INST_GPIO_PIN(0, irq_gpios)));
-		gpio_init_callback(&drv_data->gpio_cb, my_sensor_gpio_callback, BIT(4));
+	gpio_init_callback(&drv_data->gpio_cb, my_sensor_gpio_callback, BIT(drv_data->gpio_spec.pin));
 	
-	if (gpio_add_callback(drv_data->gpio_port, &drv_data->gpio_cb) < 0) {
+	if (gpio_add_callback(drv_data->gpio_spec.port, &drv_data->gpio_cb) < 0) {
 		LOG_DBG("Could not set gpio callback");
 		return -EIO;
 	}
@@ -213,7 +204,10 @@ static const struct my_sensor_config my_inst_config = {
 };
 
 
-static struct my_sensor_data my_inst_data;
+static struct my_sensor_data my_inst_data = {
+	//.gpio_spec = GPIO_DT_SPEC_INST_GET(0, irq_gpios),
+	.gpio_spec = GPIO_DT_SPEC_GET(MY_SENSOR_DRDY, gpios),
+};
 
 
 DEVICE_DT_INST_DEFINE(0, my_sensor_init, NULL,

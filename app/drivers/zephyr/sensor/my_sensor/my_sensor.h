@@ -49,7 +49,7 @@ struct my_sensor_data {
 	
 	const struct device *dev; /* [NOTA] Link to device instance */
 	
-	const struct device *gpio_port;
+	const struct gpio_dt_spec gpio_spec;
 	struct gpio_callback gpio_cb;
 	struct sensor_trigger data_ready_trigger;
 	sensor_trigger_handler_t data_ready_handler;
