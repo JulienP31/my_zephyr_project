@@ -10,6 +10,7 @@ https://docs.zephyrproject.org/latest/guides/modules.html
 https://docs.zephyrproject.org/latest/reference/usermode/syscalls.html
 
 https://docs.zephyrproject.org/latest/guides/dts/intro.html
+https://docs.zephyrproject.org/latest/guides/dts/bindings.html
 https://docs.zephyrproject.org/apidoc/latest/group__devicetree-generic-id.html
 https://docs.zephyrproject.org/apidoc/latest/group__devicetree-gpio.html
 

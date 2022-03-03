@@ -5,8 +5,7 @@
 #include "my_sensor.h"
 
 
-#define DT_DRV_COMPAT  st_my_sensor_press
-#define MY_SENSOR_DRDY DT_NODELABEL(my_sensor_drdy)
+#define DT_DRV_COMPAT st_my_sensor_press
 
 
 LOG_MODULE_REGISTER(MY_SENSOR, CONFIG_SENSOR_LOG_LEVEL);
@@ -67,8 +66,7 @@ static int my_sensor_trigger_set(const struct device *dev, const struct sensor_t
 		return -EINVAL;
 	}
 	
-	//gpio_pin_configure_dt(&drv_data->gpio_spec, GPIO_INPUT | DT_INST_GPIO_FLAGS(0, irq_gpios));
-	gpio_pin_configure_dt(&drv_data->gpio_spec, GPIO_INPUT | DT_GPIO_FLAGS(MY_SENSOR_DRDY, gpios));
+	gpio_pin_configure_dt(&drv_data->gpio_spec, GPIO_INPUT | DT_INST_GPIO_FLAGS(0, irq_gpios));
 	
 	// Disable IRQ
 	gpio_pin_interrupt_configure_dt(&drv_data->gpio_spec, GPIO_INT_DISABLE);
@@ -205,8 +203,7 @@ static const struct my_sensor_config my_inst_config = {
 
 
 static struct my_sensor_data my_inst_data = {
-	//.gpio_spec = GPIO_DT_SPEC_INST_GET(0, irq_gpios),
-	.gpio_spec = GPIO_DT_SPEC_GET(MY_SENSOR_DRDY, gpios),
+	.gpio_spec = GPIO_DT_SPEC_INST_GET(0, irq_gpios),
 };
 
 

@@ -33,10 +33,6 @@
 			label = "User";
 			gpios = <&gpioc 13 GPIO_ACTIVE_LOW>;
 		};
-		my_sensor_drdy: drdy {
-			label = "DRDY";
-			gpios = <&gpiob 4 GPIO_ACTIVE_HIGH>;
-		};
 	};
 
 	aliases {
@@ -92,10 +88,10 @@
 	clock-frequency = <I2C_BITRATE_FAST>;
 	
 	my_sensor: my-sensor@5d {
-		compatible = "st,my_sensor_press";
+		compatible = "st,my-sensor-press";
 		label = "MY_SENSOR";
 		reg = <0x5d>;
-		irq-gpios = <&my_sensor_drdy>;
+		irq-gpios = <&gpiob 4 GPIO_ACTIVE_HIGH>;
 	};
 };
 
