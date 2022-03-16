@@ -1,0 +1,9 @@
+description: B104 potentiometer
+
+compatible: "bourns,b104"
+
+properties:
+    io-channels:
+      required: true
+      type: phandle-array
+      description: Potentiometer pin
