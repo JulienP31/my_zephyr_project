@@ -1,6 +1,6 @@
-#include <zephyr.h>
-#include <sys/printk.h>
-#include <drivers/sensor.h>
+#include <zephyr/kernel.h>
+#include <zephyr/sys/printk.h>
+#include <zephyr/drivers/sensor.h>
 #include "my_driver.h"
 
 
@@ -30,11 +30,11 @@ static void my_sensor_trigger_handler(const struct device *dev, const struct sen
 
 
 /* -------------------- main [NOTA : more relevant in an application that would only requires a single thread] -------------------- */
-void main(void)
+int main(void)
 {	
 	const struct device *dev = device_get_binding("MY_DEVICE");
 	
-	const struct device *lps25hb = device_get_binding(DT_LABEL(DT_INST(0, st_my_sensor_press)));
+	const struct device *lps25hb = DEVICE_DT_GET(DT_NODELABEL(my_sensor));
 	struct sensor_trigger trig = {0};
 	
 	my_data_t *p_my_data = NULL;
@@ -44,7 +44,7 @@ void main(void)
 	// Driver test
 	if ( !device_is_ready(dev) ) {
 		printk("Could not get MY_DEVICE\n");
-		return;
+		return -1;
 	}
 	
 	printk("my_driver_do_this (%d)\n", my_driver_do_this(dev, 2, 3));
@@ -59,5 +59,7 @@ void main(void)
 		p_my_data = k_fifo_get(&my_fifo, K_FOREVER);
 		printk("pressure = %d | %d\n", p_my_data->press.val1, p_my_data->press.val2);
 	}
+	
+	return -1;
 }
 

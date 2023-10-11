@@ -2,7 +2,7 @@
 #define __MY_DRIVER_H__
 
 
-#include <device.h>
+#include <zephyr/device.h>
 
 
 /* -------------------- Typedefs -------------------- */

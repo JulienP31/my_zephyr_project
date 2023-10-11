@@ -1,6 +1,6 @@
-#include <devicetree.h>
-#include <drivers/sensor.h>
-#include <logging/log.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/logging/log.h>
 
 #include "my_sensor.h"
 
@@ -157,7 +157,7 @@ static int my_sensor_init(const struct device *dev)
 	uint8_t chip_id = 0;
 	
 	// Get I2C master device
-	drv_data->i2c_master = device_get_binding(drv_config->i2c_master_dev_name);
+	drv_data->i2c_master = DEVICE_DT_GET(DT_INST_BUS(0));
 	if (!drv_data->i2c_master) {
 		LOG_DBG("i2c master not found: %s", drv_config->i2c_master_dev_name);
 		return -EINVAL;
@@ -197,7 +197,7 @@ static const struct sensor_driver_api my_sensor_api_funcs = {
 
 /* -------------------- struct -------------------- */
 static const struct my_sensor_config my_inst_config = {
-	.i2c_master_dev_name = DT_INST_BUS_LABEL(0),
+	.i2c_master_dev_name = "i2c1", //DT_INST_BUS_LABEL(0),
 	.i2c_slave_addr = DT_INST_REG_ADDR(0),
 };
 

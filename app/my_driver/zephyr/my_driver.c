@@ -1,6 +1,7 @@
 #include "my_driver.h"
 #include <zephyr/types.h>
-#include <syscall_handler.h>
+#include <zephyr/syscall_handler.h>
+#include <zephyr/sys/printk.h>
 
 
 static int init(const struct device *dev)

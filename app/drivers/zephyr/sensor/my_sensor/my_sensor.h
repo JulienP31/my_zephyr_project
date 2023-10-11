@@ -2,8 +2,8 @@
 #define _MY_SENSOR_H_
 
 
-#include <drivers/gpio.h>
-#include <drivers/i2c.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/i2c.h>
 
 
 /* -------------------- registers -------------------- */
